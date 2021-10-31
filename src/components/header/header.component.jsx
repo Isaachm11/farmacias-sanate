@@ -1,38 +1,47 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
-import CartIcon from '../cart-icon/cart-icon.component';
-import CartDropdown from '../cart-dropdown/cart-dropdown.component';
+import CartIcon from "../cart-icon/cart-icon.component";
+import CartDropdown from "../cart-dropdown/cart-dropdown.component";
 
 // import { ReactComponent as Logo } from '../../assets/crown.svg';
+import { GiHospitalCross } from "react-icons/gi";
 
-import './header.styles.scss';
+import { logoutUser } from "../../redux/user/user.actions";
 
-const Header = ({ currentUser, hidden }) => (
-  <div className='header'>
-    <Link className='logo-container' to='/'>
-      {/* <Logo className='logo' /> */}
-    </Link>
-    <div className='options'>
-      <Link className='option' to='/shop'>
-        SHOP
+import "./header.styles.scss";
+
+const Header = ({ logoutUser }) => {
+  const [showCartDropdown, setShowCartDropdown] = useState(false);
+
+  const toggleCartDropdown = () => {
+    setShowCartDropdown(!showCartDropdown);
+  };
+
+  return (
+    <div className="header">
+      <Link className="logo-container" to="/products">
+        <GiHospitalCross className="logo" />
       </Link>
-      <Link className='option' to='/shop'>
-        CONTACT
-      </Link>
-      {/* {currentUser ? (
-        <div className='option' onClick={() => auth.signOut()}>
-          SIGN OUT
-        </div>
-      ) : (
-        <Link className='option' to='/signin'>
-          SIGN IN
+      <div className="options">
+        <Link className="option" to="/products">
+          SHOP
         </Link>
-      )} */}
-      <CartIcon />
+        <Link className="option" to="/products">
+          CONTACT
+        </Link>
+        <Link onClick={logoutUser} className="option" to="/">
+          LOG OUT
+        </Link>
+        <CartIcon toggleCartDropdown={toggleCartDropdown} />
+      </div>
+      {showCartDropdown ? <CartDropdown /> : null}
     </div>
-    {hidden ? null : <CartDropdown />}
-  </div>
-);
+  );
+};
 
-export default Header;
+const mapDispatchToProps = (dispatch) => ({
+  logoutUser: () => dispatch(logoutUser()),
+});
+export default connect(null, mapDispatchToProps)(Header);

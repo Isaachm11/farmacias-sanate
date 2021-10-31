@@ -1,0 +1,13 @@
+input {
+  background-color: white !important;
+  border-radius: 5px;
+  color: #FCFFFF;
+
+  &:focus{
+    color: black !important;
+  }
+}
+
+label{
+  color: black !important;
+}

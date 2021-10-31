@@ -1,33 +1,48 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 
-import SignIn from "./pages/sign-in/sign-in";
-import ProductsList from "./pages/products-list/products-list";
+import SignInPage from "./pages/sign-in/sign-in";
+import ProductsListPage from "./pages/products-list/products-list";
+import ProductEditPage from "./pages/product-edit/product-edit";
 import Header from "./components/header/header.component";
 
-const App = () => {
+import { selectCurrentUser } from "./redux/user/user.selectors";
+
+import "./App.css";
+import Title from "./components/title/title.component";
+
+const App = ({ currentUser }) => {
   return (
     <div>
-      <Header />
+      {currentUser ? <Header /> : null}
+      {/* <Header /> */}
+      <Title />
       <Switch>
-        <Route exact path="/" component={SignIn} />
-        <Route exact path="/products" component={ProductsList} />
-        {/* <Route path='/shop' /> */}
-        {/* <Route exact path='/checkout' component={CheckoutPage} /> */}
-        {/* <Route
-            exact
-            path='/signin'
-            render={() =>
-              this.props.currentUser ? (
-                <Redirect to='/' />
-              ) : (
-                <SignInAndSignUpPage />
-              )
-            }
-          /> */}
+        <Route exact path="/" component={SignInPage} />
+        {!currentUser ? <Redirect to="/" /> : null}
+        <Route exact path="/products" component={ProductsListPage} />
+        <Route exact path="/products/edit/:id" component={ProductEditPage} />
       </Switch>
+      {/* <Switch> */}
+      {/* <Route exact path="/" component={SignIn} /> */}
+      {/* <Route exact path="/products" component={ProductsList} /> */}
+      {/* <Route exact path='/checkout' component={CheckoutPage} /> */}
+      {/* <Route
+          exact
+          path="/signin"
+          render={() => (currentUser ? <Redirect to="/" /> : <SignIn />)}
+        /> */}
+      {/* </Switch> */}
     </div>
   );
 };
 
-export default App;
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+});
+
+export default connect(mapStateToProps)(App);
+
+export const url_server = "https://1878-201-145-108-16.ngrok.io";

@@ -1,30 +1,42 @@
 import React from "react";
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 import CustomButton from "../custom-button/custom-button.component";
 
-import "./card.styles.scss";
+import { selectCurrentUser } from "../../redux/user/user.selectors";
 
-const Card = ({ product }) => (
+import "./card.styles.scss";
+import { withRouter } from "react-router";
+
+const Card = ({ product, currentUser, history }) => (
   <div className="card-container">
     <h2 className="text-center">{product.name}</h2>
     <div className="content">
       <img
         className="image"
-        src={`https://robohash.org/${product.id}?set=set2&size=180x180`}
+        src={`https://picsum.photos/seed/${product.p_id}/200`}
         alt="product"
       />
       <div className="info">
         <ul className="list-group">
           <li className="list-group-item text-justify">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita
-            sit, eius, nostrum consequuntur similique
+            {product.description}
           </li>
-          <li className="list-group-item">Price: $2387</li>
-          <li className="list-group-item">Stock: 2387</li>
+          <li className="list-group-item">Price: $ {product.price}</li>
+          <li className="list-group-item">Stock: {product.availability}</li>
         </ul>
       </div>
     </div>
-    <CustomButton>Add to cart</CustomButton>
+    {currentUser.type === "USERr" ? (
+      <CustomButton>Add to cart</CustomButton>
+    ) : (
+      <CustomButton onClick={() => history.push(`products/edit/${product.p_id}`)}>Edit product</CustomButton>
+    )}
   </div>
 );
 
-export default Card;
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+});
+
+export default withRouter(connect(mapStateToProps)(Card));

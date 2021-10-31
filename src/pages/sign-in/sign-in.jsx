@@ -1,47 +1,55 @@
 import * as React from "react";
+import { useState } from "react";
+import { url_server } from "../../App";
+import axios from "axios";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
+import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-// function Copyright(props) {
-//   return (
-//     <Typography
-//       variant="body2"
-//       color="text.secondary"
-//       align="center"
-//       {...props}
-//     >
-//       {"Copyright © "}
-//       <Link color="inherit" href="https://mui.com/">
-//         Your Website
-//       </Link>{" "}
-//       {new Date().getFullYear()}
-//       {"."}
-//     </Typography>
-//   );
-// }
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { setCurrentUser } from "../../redux/user/user.actions";
 
 const theme = createTheme();
 
-export default function SignIn() {
+const SignInPage = ({ setCurrentUser, history }) => {
+  const [userCredentials, setUserCredentials] = useState({
+    username: "",
+    password: "",
+  });
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleChange = (event) => {
+    const { value, name } = event.target;
+    setUserCredentials({ ...userCredentials, [name]: value });
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    axios
+      .post(`${url_server}/users/login`, {
+        username: userCredentials.username,
+        password: userCredentials.password,
+      })
+      .then(function (response) {
+        setCurrentUser(response.data);
+        history.push("/products");
+        // console.log(response);
+        // console.log(response.data);
+      })
+      .catch(function (error) {
+        // console.log(error);
+        setErrorMessage("Usuario o contraseña incorrectos");
+      });
   };
 
   return (
@@ -62,6 +70,7 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+          {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -72,11 +81,12 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
               autoFocus
+              onChange={handleChange}
             />
             <TextField
               margin="normal"
@@ -87,10 +97,7 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              onChange={handleChange}
             />
             <Button
               type="submit"
@@ -118,4 +125,9 @@ export default function SignIn() {
       </Container>
     </ThemeProvider>
   );
-}
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+});
+export default withRouter(connect(null, mapDispatchToProps)(SignInPage));
