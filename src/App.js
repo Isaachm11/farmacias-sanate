@@ -19,9 +19,9 @@ const App = ({ currentUser }) => {
       {currentUser ? <Header /> : null}
       {/* <Header /> */}
       <Title />
+      {!currentUser ? <Redirect to="/" /> : <Redirect to="/products" />}
       <Switch>
         <Route exact path="/" component={SignInPage} />
-        {!currentUser ? <Redirect to="/" /> : null}
         <Route exact path="/products" component={ProductsListPage} />
         <Route exact path="/products/edit/:id" component={ProductEditPage} />
       </Switch>

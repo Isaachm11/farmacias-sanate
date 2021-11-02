@@ -17,6 +17,7 @@ const Card = ({ product, currentUser, history }) => (
         src={`https://picsum.photos/seed/${product.p_id}/200`}
         alt="product"
       />
+
       <div className="info">
         <ul className="list-group">
           <li className="list-group-item text-justify">
@@ -27,7 +28,7 @@ const Card = ({ product, currentUser, history }) => (
         </ul>
       </div>
     </div>
-    {currentUser.type === "USERr" ? (
+    {currentUser.type === "USER" ? (
       <CustomButton>Add to cart</CustomButton>
     ) : (
       <CustomButton onClick={() => history.push(`products/edit/${product.p_id}`)}>Edit product</CustomButton>

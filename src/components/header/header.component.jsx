@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { createStructuredSelector } from "reselect";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { selectCurrentUser } from "../../redux/user/user.selectors";
 
 import CartIcon from "../cart-icon/cart-icon.component";
 import CartDropdown from "../cart-dropdown/cart-dropdown.component";
@@ -12,7 +14,7 @@ import { logoutUser } from "../../redux/user/user.actions";
 
 import "./header.styles.scss";
 
-const Header = ({ logoutUser }) => {
+const Header = ({ currentUser, logoutUser }) => {
   const [showCartDropdown, setShowCartDropdown] = useState(false);
 
   const toggleCartDropdown = () => {
@@ -23,6 +25,7 @@ const Header = ({ logoutUser }) => {
     <div className="header">
       <Link className="logo-container" to="/products">
         <GiHospitalCross className="logo" />
+        <div className="user-name">{currentUser.name} - {currentUser.type}</div>
       </Link>
       <div className="options">
         <Link className="option" to="/products">
@@ -41,7 +44,11 @@ const Header = ({ logoutUser }) => {
   );
 };
 
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   logoutUser: () => dispatch(logoutUser()),
 });
-export default connect(null, mapDispatchToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

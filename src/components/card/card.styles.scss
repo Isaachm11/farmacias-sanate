@@ -11,8 +11,12 @@
   transition: transform 0.25s ease-out;
 
   .info,
-  .image {
+  img {
     align-self: center;
+  }
+
+  img {
+    border-radius: 20px;
   }
 
   .text-center {
