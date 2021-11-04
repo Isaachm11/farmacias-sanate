@@ -38,7 +38,7 @@ const ProductEditPage = ({ match, history }) => {
     }
 
     fetchProducts();
-  }, []);
+  }, [match]);
 
   const handleChange = (event) => {
     const { value, name } = event.target;
@@ -117,7 +117,6 @@ const ProductEditPage = ({ match, history }) => {
               name="price"
               type="price"
               id="price"
-              type="number"
               value={product.price}
               autoComplete="current-price"
               onChange={handleChange}
@@ -130,7 +129,6 @@ const ProductEditPage = ({ match, history }) => {
               name="availability"
               type="availability"
               id="availability"
-              type="number"
               inputProps={{
                 step: "1",
               }}
